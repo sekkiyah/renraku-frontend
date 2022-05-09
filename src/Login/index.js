@@ -1,13 +1,23 @@
-import Button from "@restart/ui/esm/Button";
 import React, { useState } from "react";
-import { Col, Container, FloatingLabel, Form, Row } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  Row,
+  Button,
+} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+//import fetchCall from "../services/fetchService";
 //import fetchCall from "../services/fetchService";
 import { useLocalState } from "../util/useLocalStorage";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [jwt, setJwt] = useLocalState("", "jwt");
+  const navigate = useNavigate();
 
   function sendLoginRequest() {
     const reqBody = {
@@ -17,7 +27,20 @@ const Login = () => {
       // asd
     };
 
-    // fetchCall("POST",`/api/auth/login`,jwt,reqBody)
+    // fetchCall("POST", `/api/auth/login`, jwt, reqBody)
+    //   .then((response) => {
+    //     if (response.ok) {
+    //       console.log("Validated");
+    //       return Promise.all([response.json(), response.headers]);
+    //     } else return Promise.reject("Invalid login");
+    //   })
+    //   .then(([body, headers]) => { Come back to
+    //     setJwt(headers.get("authorization"));
+    //     //navigate("/plans");
+    //   })
+    //   .catch((message) => {
+    //     console.log(message);
+    //   });
     fetch("/api/auth/login", {
       headers: {
         "Content-Type": "application/json",
@@ -74,6 +97,7 @@ const Login = () => {
               type="submit"
               size="lg"
               onClick={() => sendLoginRequest()}
+              //onSubmit={() => sendLoginRequest()}
             >
               Login
             </Button>
@@ -82,7 +106,7 @@ const Login = () => {
               type="button"
               size="lg"
               onClick={() => {
-                window.location.href = "/";
+                navigate("/");
               }}
             >
               Return Home

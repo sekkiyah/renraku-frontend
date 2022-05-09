@@ -1,42 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import fetchCall from "../services/fetchService";
+import React, { useState } from "react";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { useLocalState } from "../util/useLocalStorage";
 
 const Dashboard = () => {
-  const [jwt, setJwt] = useLocalState("", "jwt");
-  const [plans, setPlans] = useState(null);
-
-  useEffect(() => {
-    fetchCall("GET", `/api/plans`, jwt).then((planData) => {
-      setPlans(planData);
-    });
-  }, []);
-
-  function createPlan() {
-    fetchCall("POST", `/api/plans`, jwt).then((plan) => {
-      console.log(plan);
-      //window.location.href = `/plans/${plan.planNumber}`; Redirect to page
-    });
-  }
+  //const [jwt, setJwt] = useLocalState("", "jwt");
+  const navigate = useNavigate();
 
   return (
     <>
-      <div style={{ margin: "2em" }}>
-        {plans ? (
-          plans.map((plan) => (
-            <div key={plan.planNumber}>
-              <Link to={`/plans/${plan.planNumber}`}>
-                Plan Number: {plan.planNumber}
-              </Link>
-            </div>
-          ))
-        ) : (
-          <></>
-        )}
-        <button onClick={() => createPlan()}>Add Plan</button>
-      </div>
-      <div>Jwt token is {jwt}</div>
+      <Container fluid className="d-flex flex-column m-3 gap-3 text-center">
+        <h2>Select an option below</h2>
+        <Row>
+          <Col className="">
+            <Button className="col-md-5" onClick={() => navigate("/employees")}>
+              Employees
+            </Button>
+          </Col>
+          <Col>
+            <Button
+              className="col-md-5"
+              variant="success"
+              onClick={() => navigate("/plans")}
+            >
+              Plans
+            </Button>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };
