@@ -16,7 +16,7 @@ async function fetchCall(requestMethod, url, jwt, requestBody) {
 
   try {
     const response = await fetch(url, fetchData);
-    console.log("Response: ", response);
+    //console.log("Response: ", response);
     const processedResponse = await processResponse(response);
     //console.log("Processed response: ", processedResponse);
     return processedResponse;

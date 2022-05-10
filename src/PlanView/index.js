@@ -27,9 +27,9 @@ const PlanView = () => {
   }, []);
 
   function updatePlan(prop, value) {
-    const newPlan = { ...plan }; //duplicates original and creates 'copy'
-    newPlan[prop] = value;
-    setPlan(newPlan); //updates the view
+    const updatedPlan = { ...plan }; //duplicates original and creates 'copy'
+    updatedPlan[prop] = value;
+    setPlan(updatedPlan); //updates the view
   }
 
   function deletePlan() {

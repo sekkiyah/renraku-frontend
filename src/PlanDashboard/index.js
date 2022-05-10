@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
@@ -7,32 +7,41 @@ import { useUser } from "../UserProvider";
 
 const PlanDashboard = () => {
   const user = useUser();
-  const [plans, setPlans] = useState(null); //FIX
+  const [plans, setPlans] = useState(null); //FIX Live Updates
   const planList = useRef(plans);
   const navigate = useNavigate();
   const [planModal, setPlanModal] = useState(false);
   const closePlanModal = () => setPlanModal(false);
   const showPlanModal = () => setPlanModal(true);
 
+  const [newPlan, setNewPlan] = useState(null);
+
   useEffect(() => {
-    planList.current = planList;
-    console.log(planList.current);
+    planList.current = plans;
   });
 
   useEffect(() => {
-    fetchCall("GET", `/api/plans`, user.jwt).then((planData) => {
-      console.log("calling GET");
-      setPlans(planData);
-    });
-
-    //fetch();
+    fetchPlans();
   }, [planList.current]);
 
-  function createPlan() {
-    fetchCall("POST", `/api/plans`, user.jwt).then((plan) => {
-      console.log("Calling POST");
-      //setPlans(plan);
-    });
+  function createPlan(plan) {
+    fetchCall("POST", `api/plans`, user.jwt, plan);
+    console.log(plan);
+  }
+
+  function updateNewPlan(prop, value) {
+    const updatedNewPlan = { ...newPlan }; //duplicates original and creates 'copy'
+    updatedNewPlan[prop] = value;
+    setNewPlan(updatedNewPlan);
+  }
+
+  async function fetchPlans() {
+    const getPlans = await fetchCall("GET", `/api/plans`, user.jwt);
+    planList.current = setPlans(getPlans);
+    // .then((planData) => {
+    //   //console.log("calling GET");
+    //   planList.current = setPlans(planData);
+    // });
   }
 
   return (
@@ -80,51 +89,52 @@ const PlanDashboard = () => {
           <Modal.Title>New Plan</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Row>
-            <Form.Group as={Col}>
-              <Form.Label>Plan Name</Form.Label>
-              <Form.Control
-                type="text"
-                id="planName"
-                //onChange={(e) => createPlan("planName", e.target.value)}
-                //value={plans.planName}
-              />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>Plan Subgroup</Form.Label>
-              <Form.Control
-                type="text"
-                id="subgroup"
-                //onChange={(e) => createPlan("subgroup", e.target.value)}
-                //value={plans.subgroup}
-              />
-            </Form.Group>
-          </Row>
-          <Row className="mt-3">
-            <Form.Group as={Col}>
-              <Form.Label>Policy #:</Form.Label>
-              <Form.Control
-                type="text"
-                id="policyNumber"
-                //onChange={(e) => createPlan("policyNumber", e.target.value)}
-                //value={plans.policyNumber}
-              />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>Group #:</Form.Label>
-              <Form.Control
-                type="text"
-                id="groupNumber"
-                //onChange={(e) => createPlan("groupNumber", e.target.value)}
-                //value={plans.groupNumber}
-              />
-            </Form.Group>
-          </Row>
+          <Form name="newPlan">
+            <Row>
+              <Form.Group as={Col}>
+                <Form.Label>Plan Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="planName"
+                  onChange={(e) => updateNewPlan("planName", e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Plan Subgroup</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="subgroup"
+                  onChange={(e) => updateNewPlan("subgroup", e.target.value)}
+                />
+              </Form.Group>
+            </Row>
+            <Row className="mt-3">
+              <Form.Group as={Col}>
+                <Form.Label>Policy #:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="policyNumber"
+                  onChange={(e) =>
+                    updateNewPlan("policyNumber", e.target.value)
+                  }
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Group #:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="groupNumber"
+                  onChange={(e) => updateNewPlan("groupNumber", e.target.value)}
+                />
+              </Form.Group>
+            </Row>
+          </Form>
         </Modal.Body>
         <Col className="d-flex flex-column m-3 gap-3 flex-sm-row">
           <Button
+            type="submit"
             onClick={() => {
-              createPlan();
+              createPlan(newPlan);
               closePlanModal();
             }}
           >
@@ -136,7 +146,6 @@ const PlanDashboard = () => {
           </Button>
         </Col>
       </Modal>
-      {/* <div>Jwt token is {jwt}</div> */}
     </>
   );
 };

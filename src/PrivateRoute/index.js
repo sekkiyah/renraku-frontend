@@ -16,7 +16,7 @@ const PrivateRoute = (props) => {
         `/api/auth/validate?token=${user.jwt}`,
         user.jwt
       );
-      console.log("isValid: ", isValid);
+      //console.log("isValid: ", isValid);
       setIsValid(isValid);
       setIsLoading(false);
     } catch (err) {
