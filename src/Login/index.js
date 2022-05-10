@@ -6,20 +6,20 @@ import {
   Form,
   Row,
   Button,
+  Alert,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-//import fetchCall from "../services/fetchService";
-//import fetchCall from "../services/fetchService";
-import { useLocalState } from "../util/useLocalStorage";
+import { useUser } from "../UserProvider";
 
 const Login = () => {
+  const user = useUser();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [jwt, setJwt] = useLocalState("", "jwt");
-  const navigate = useNavigate();
 
   function sendLoginRequest() {
+    setErrorMsg("");
     const reqBody = {
       username: username,
       password: password,
@@ -27,20 +27,6 @@ const Login = () => {
       // asd
     };
 
-    // fetchCall("POST", `/api/auth/login`, jwt, reqBody)
-    //   .then((response) => {
-    //     if (response.ok) {
-    //       console.log("Validated");
-    //       return Promise.all([response.json(), response.headers]);
-    //     } else return Promise.reject("Invalid login");
-    //   })
-    //   .then(([body, headers]) => { Come back to
-    //     setJwt(headers.get("authorization"));
-    //     //navigate("/plans");
-    //   })
-    //   .catch((message) => {
-    //     console.log(message);
-    //   });
     fetch("/api/auth/login", {
       headers: {
         "Content-Type": "application/json",
@@ -50,15 +36,21 @@ const Login = () => {
     })
       .then((response) => {
         if (response.status === 200) {
-          return Promise.all([response.json(), response.headers]);
-        } else return Promise.reject("Invalid login");
+          //console.log(response.headers.get("authorization"));
+          //return response.text();
+          return response.headers.get("authorization");
+        } else if (response.status === 401 || response.status === 403) {
+          setErrorMsg("Invalid login");
+        } else {
+          setErrorMsg("Something else went wrong");
+        }
       })
-      .then(([body, headers]) => {
-        setJwt(headers.get("authorization"));
-        window.location.href = "dashboard";
-      })
-      .catch((message) => {
-        alert(message);
+      .then((data) => {
+        if (data) {
+          //console.log("Login processed response: ", data);
+          user.setJwt(data);
+          navigate("/dashboard");
+        }
       });
   }
 
@@ -85,6 +77,9 @@ const Login = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") return sendLoginRequest();
+                  }}
                 />
               </FloatingLabel>
             </Form.Group>
@@ -97,7 +92,6 @@ const Login = () => {
               type="submit"
               size="lg"
               onClick={() => sendLoginRequest()}
-              //onSubmit={() => sendLoginRequest()}
             >
               Login
             </Button>
@@ -113,6 +107,17 @@ const Login = () => {
             </Button>
           </Col>
         </Row>
+        {errorMsg ? (
+          <Alert
+            variant="secondary"
+            className="justify-content-center text-center mt-3"
+            style={{ color: "red", fontWeight: "bold" }}
+          >
+            {errorMsg}
+          </Alert>
+        ) : (
+          <></>
+        )}
       </Container>
     </>
   );

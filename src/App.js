@@ -1,4 +1,3 @@
-//import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import PlanDashboard from "./PlanDashboard";
@@ -7,27 +6,26 @@ import Homepage from "./Homepage";
 import Login from "./Login";
 import PlanView from "./PlanView";
 import PrivateRoute from "./PrivateRoute";
-import { useLocalState } from "./util/useLocalStorage";
 import Dashboard from "./Dashboard";
 import EmployeeDashboard from "./EmployeeDashboard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "./UserProvider";
 
 function App() {
-  const [jwt, setJwt] = useLocalState("", "jwt");
-  const [role, setRole] = useState(() => {
-    getRoleFromJwt();
-  });
+  const user = useUser();
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    setRoles(getRolesFromJwt());
+  }, [user.jwt]);
 
-  function getRoleFromJwt() {
-    if (jwt) {
-      const decodedJwt = jwt_decode(jwt);
-      console.log(decodedJwt);
+  function getRolesFromJwt() {
+    if (user.jwt) {
+      const decodedJwt = jwt_decode(user.jwt);
+      //console.log("JWT DECODED: ", decodedJwt);
       return decodedJwt.authorities;
     }
-    return;
+    return [];
   }
-
-  /*  */
 
   return (
     <Routes>

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import fetchCall from "../services/fetchService";
-import { useLocalState } from "../util/useLocalStorage";
-import { Col, Container, Form, Row, Button } from "react-bootstrap";
+import { Col, Container, Form, Row, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../UserProvider";
 
 const PlanView = () => {
-  const [jwt, setJwt] = useLocalState("", "jwt");
+  const user = useUser();
   const planNumber = window.location.href.split("/plans/")[1];
   const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState("");
   const [plan, setPlan] = useState({
     planName: "",
     subgroup: "",
@@ -16,7 +17,7 @@ const PlanView = () => {
   });
 
   useEffect(() => {
-    fetchCall("GET", `/api/plans/${planNumber}`, jwt).then((planData) => {
+    fetchCall("GET", `/api/plans/${planNumber}`, user.jwt).then((planData) => {
       if (planData.planName === null) planData.planName = "";
       if (planData.subgroup === null) planData.subgroup = "";
       if (planData.policyNumber === null) planData.policyNumber = "";
@@ -32,7 +33,7 @@ const PlanView = () => {
   }
 
   function deletePlan() {
-    fetchCall("DELETE", `/api/plans/${planNumber}`, jwt, plan).then(
+    fetchCall("DELETE", `/api/plans/${planNumber}`, user.jwt, plan).then(
       (planData) => {
         setPlan(planData);
         navigate("/plans");
@@ -41,10 +42,16 @@ const PlanView = () => {
   }
 
   function save() {
-    fetchCall("PUT", `/api/plans/${planNumber}`, jwt, plan).then((planData) => {
-      setPlan(planData);
-      console.log(planData);
-    });
+    fetchCall("PUT", `/api/plans/${planNumber}`, user.jwt, plan).then(
+      (planData) => {
+        setPlan(planData);
+        console.log(planData);
+        setErrorMsg("Successfully updated plan");
+        setTimeout(() => {
+          setErrorMsg("");
+        }, "3000");
+      }
+    );
   }
 
   return (
@@ -116,6 +123,17 @@ const PlanView = () => {
             </Col>
           </Row>
         </Container>
+      ) : (
+        <></>
+      )}
+      {errorMsg ? (
+        <Alert
+          variant="success"
+          className="justify-content-center text-center mt-1"
+          style={{ color: "green", fontWeight: "bold" }}
+        >
+          {errorMsg}
+        </Alert>
       ) : (
         <></>
       )}

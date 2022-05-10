@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useLocalState } from "../util/useLocalStorage";
 
 const Dashboard = () => {
-  //const [jwt, setJwt] = useLocalState("", "jwt");
   const navigate = useNavigate();
 
   return (

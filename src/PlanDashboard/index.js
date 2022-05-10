@@ -3,10 +3,10 @@ import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
 import fetchCall from "../services/fetchService";
-import { useLocalState } from "../util/useLocalStorage";
+import { useUser } from "../UserProvider";
 
 const PlanDashboard = () => {
-  const [jwt, setJwt] = useLocalState("", "jwt");
+  const user = useUser();
   const [plans, setPlans] = useState(null); //FIX
   const planList = useRef(plans);
   const navigate = useNavigate();
@@ -20,16 +20,16 @@ const PlanDashboard = () => {
   });
 
   useEffect(() => {
-    fetchCall("GET", `/api/plans`, jwt).then((planData) => {
+    fetchCall("GET", `/api/plans`, user.jwt).then((planData) => {
       console.log("calling GET");
       setPlans(planData);
     });
 
     //fetch();
-  }, []);
+  }, [planList.current]);
 
   function createPlan() {
-    fetchCall("POST", `/api/plans`, jwt).then((plan) => {
+    fetchCall("POST", `/api/plans`, user.jwt).then((plan) => {
       console.log("Calling POST");
       //setPlans(plan);
     });
