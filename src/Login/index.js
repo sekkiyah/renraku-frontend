@@ -95,7 +95,7 @@ const Login = () => {
             >
               Login
             </Button>
-            <Button
+            {/* <Button
               variant="secondary"
               type="button"
               size="lg"
@@ -104,7 +104,7 @@ const Login = () => {
               }}
             >
               Return Home
-            </Button>
+            </Button> */}
           </Col>
         </Row>
         {errorMsg ? (

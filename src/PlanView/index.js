@@ -57,7 +57,7 @@ const PlanView = () => {
   return (
     <>
       {plan ? (
-        <Container className="d-flex flex-column m-3">
+        <Container className="d-flex flex-column mt-3">
           <h3>Plan Number: {planNumber}</h3>
           <Row>
             <Form.Group as={Col}>
@@ -129,7 +129,7 @@ const PlanView = () => {
       {errorMsg ? (
         <Alert
           variant="success"
-          className="justify-content-center text-center mt-1"
+          className="justify-content-center text-center mt-3"
           style={{ color: "green", fontWeight: "bold" }}
         >
           {errorMsg}

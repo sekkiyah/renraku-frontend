@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { UserProvider } from "./UserProvider";
+import NavBar from "./NavBar";
 
 //ReactDOM.render(
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -13,6 +14,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
+        <NavBar />
         <App />
       </UserProvider>
     </BrowserRouter>

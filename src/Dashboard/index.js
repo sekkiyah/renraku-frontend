@@ -7,8 +7,14 @@ const Dashboard = () => {
 
   return (
     <>
-      <Container fluid className="d-flex flex-column m-3 gap-3 text-center">
-        <h2>Select an option below</h2>
+      <Container fluid className="d-flex flex-column mt-3 gap-3 text-center">
+        <Row>
+          <Col>
+            <h1>Dashboard</h1>
+            <br />
+            <h5 className="text-muted">Select an option below</h5>
+          </Col>
+        </Row>
         <Row>
           <Col className="">
             <Button className="col-md-5" onClick={() => navigate("/employees")}>

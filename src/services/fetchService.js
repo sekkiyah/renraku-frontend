@@ -45,7 +45,7 @@ function processResponse(response) {
       return response.text();
     }
   }
-  return console.log("Something went wrong");
+  return console.log(`Something went wrong: ${response.json()}`);
 }
 
 export default fetchCall;

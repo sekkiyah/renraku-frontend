@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import { useNavigate } from "react-router-dom";
@@ -46,7 +46,7 @@ const PlanDashboard = () => {
 
   return (
     <>
-      <Container className="d-flex flex-column m-3">
+      <Container className="d-flex flex-column mt-3">
         <Table bordered hover>
           <thead>
             <tr>
@@ -96,8 +96,12 @@ const PlanDashboard = () => {
                 <Form.Control
                   type="text"
                   name="planName"
+                  required
                   onChange={(e) => updateNewPlan("planName", e.target.value)}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Please provide a plan name
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Plan Subgroup</Form.Label>
@@ -138,9 +142,8 @@ const PlanDashboard = () => {
               closePlanModal();
             }}
           >
-            Submit Plan
+            Add Plan
           </Button>
-
           <Button variant="secondary" onClick={closePlanModal}>
             Close
           </Button>
